@@ -1,0 +1,1 @@
+{"customizations":{"vscode":{"extensions":["bradlc.vscode-tailwindcss","dbaeumer.vscode-eslint"]}},"forwardPorts":[3000],"image":"mcr.microsoft.com/devcontainers/javascript-node:20","name":"YTUBE","portsAttributes":{"3000":{"label":"YTUBE web","onAutoForward":"openPreview"}},"postCreateCommand":"npm install"}

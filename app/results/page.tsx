@@ -4,6 +4,7 @@ import { createServerSupabase } from "@/lib/supabase-server";
 import { DEMO_VIDEOS } from "@/lib/demo-data";
 import type { Video } from "@/lib/types";
 import VideoCard from "@/components/VideoCard";
+import { sanitizeSearchQuery } from "@/lib/search";
 import SetupBanner from "@/components/SetupBanner";
 
 export default async function ResultsPage({ searchParams }: { searchParams: { q?: string } }) {
@@ -18,7 +19,7 @@ export default async function ResultsPage({ searchParams }: { searchParams: { q?
     if (configured) {
       const supabase = createServerSupabase();
       if (supabase) {
-        const clean = q.replace(/[%_]/g, "");
+        const clean = sanitizeSearchQuery(q);
         const { data } = await supabase
           .from("videos")
           .select("*, profiles(id, username, avatar_url)")
