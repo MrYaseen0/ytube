@@ -39,7 +39,7 @@ export default function VideoCard({ video, layout = "grid" }: { video: Video; la
   }
 
   return (
-    <div>
+    <div className="group">
       <Link href={`/watch/${video.id}`}>
         <div className="relative aspect-video overflow-hidden rounded-xl bg-yt-surface ring-1 ring-white/5 transition-all duration-200 hover:shadow-neon hover:ring-yt-pink/50">
           {video.thumbnail_url && (

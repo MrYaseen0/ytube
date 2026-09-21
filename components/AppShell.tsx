@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
@@ -16,7 +16,13 @@ export default function AppShell({
   settings: SiteSettings;
   categories: Category[];
 }) {
+  // Start open (matches SSR markup, so no hydration mismatch),
+  // then close on small screens once mounted.
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  useEffect(() => {
+    if (window.innerWidth < 768) setSidebarOpen(false);
+  }, []);
 
   return (
     <div className="flex min-h-screen flex-col bg-yt-bg text-yt-text">

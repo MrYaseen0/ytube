@@ -24,7 +24,7 @@ export default function ReportButton({ videoId, enabled }: { videoId: string; en
     }
     const { error } = await supabase
       .from("reports")
-      .insert({ video_id: videoId, reporter_id: user.id, reason: reason.trim() });
+      .insert({ video_id: videoId, reporter_id: user.id, reason: reason.trim().slice(0, 500) });
     if (!error) {
       setDone(true);
       alert("Report submitted. Thanks - our moderators will review it.");
@@ -36,7 +36,8 @@ export default function ReportButton({ videoId, enabled }: { videoId: string; en
   return (
     <button
       onClick={report}
-      className="flex items-center gap-1.5 rounded-full bg-yt-surface px-3 py-1.5 text-sm font-medium hover:bg-yt-hover"
+      aria-label="Report this video"
+      className={`flex min-h-[44px] items-center gap-1.5 rounded-full bg-yt-surface px-3 py-1.5 text-sm font-medium hover:bg-yt-hover`}
     >
       <FlagIcon />
       Report

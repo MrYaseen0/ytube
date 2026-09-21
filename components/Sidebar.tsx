@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Category } from "@/lib/types";
@@ -17,6 +18,18 @@ export default function Sidebar({
   logoText: string;
 }) {
   const pathname = usePathname();
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+
+  // Escape closes the mobile drawer; move focus into it when it opens.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    closeBtnRef.current?.focus();
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
 
   const mainLinks = [
     { href: "/", label: "Home", icon: <HomeIcon /> },
@@ -83,11 +96,21 @@ export default function Sidebar({
       {/* Mobile drawer */}
       {open && (
         <div className="fixed inset-0 z-50 md:hidden">
-          <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-          <aside className="absolute left-0 top-0 h-full w-64 overflow-y-auto bg-yt-bg p-3">
+          <div className="absolute inset-0 bg-black/60" onClick={onClose} aria-hidden="true" />
+          <aside
+            role="dialog"
+            aria-modal="true"
+            aria-label="Navigation menu"
+            className="absolute left-0 top-0 h-full w-64 overflow-y-auto bg-yt-bg p-3"
+          >
             <div className="mb-2 flex items-center justify-between px-1">
               <span className="text-glow text-lg font-extrabold tracking-tight text-white">{logoText}</span>
-              <button onClick={onClose} className="rounded-full p-2 hover:bg-yt-hover" aria-label="Close menu">
+              <button
+                ref={closeBtnRef}
+                onClick={onClose}
+                className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full hover:bg-yt-hover"
+                aria-label="Close menu"
+              >
                 <CloseIcon />
               </button>
             </div>

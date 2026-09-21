@@ -22,7 +22,7 @@ function AuthShell({
   children: React.ReactNode;
 }) {
   return (
-    <div className="mx-auto flex min-h-[calc(100vh-8rem)] w-full max-w-5xl items-stretch overflow-hidden rounded-2xl border border-yt-border bg-yt-surface shadow-neon">
+    <div className="animate-fade-up mx-auto flex min-h-[calc(100vh-8rem)] w-full max-w-5xl items-stretch overflow-hidden rounded-2xl border border-yt-border bg-yt-surface shadow-neon">
       {/* Branded panel */}
       <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-gradient-to-br from-[#23060c] via-[#5c0f1c] to-[#a31621] p-10 md:flex">
         <div
@@ -47,8 +47,12 @@ function AuthShell({
             Upload, watch and share videos on the platform built for creators.
           </p>
           <ul className="mt-6 flex flex-col gap-3">
-            {FEATURES.map((f) => (
-              <li key={f} className="flex items-center gap-3 text-sm text-white/85">
+            {FEATURES.map((f, i) => (
+              <li
+                key={f}
+                className="animate-fade-up flex items-center gap-3 text-sm text-white/85"
+                style={{ animationDelay: `${120 + i * 80}ms` }}
+              >
                 <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-yt-pink/20 text-yt-pink shadow-neon-sm">
                   <CheckIcon className="h-4 w-4" />
                 </span>
@@ -95,7 +99,7 @@ function SubmitButton({ busy, children }: { busy: boolean; children: React.React
   );
 }
 
-export function SignInForm({ next }: { next?: string }) {
+export function SignInForm({ next, demo }: { next?: string; demo?: boolean }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -105,6 +109,10 @@ export function SignInForm({ next }: { next?: string }) {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    if (demo) {
+      setError("Demo mode — connect Supabase to enable sign-in.");
+      return;
+    }
     setBusy(true);
     try {
       const supabase = createClient();
@@ -138,7 +146,7 @@ export function SignInForm({ next }: { next?: string }) {
   );
 }
 
-export function SignUpForm() {
+export function SignUpForm({ demo }: { demo?: boolean }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -151,6 +159,10 @@ export function SignUpForm() {
     e.preventDefault();
     setError("");
     setMessage("");
+    if (demo) {
+      setError("Demo mode — connect Supabase to enable sign-up.");
+      return;
+    }
     setBusy(true);
     try {
       const supabase = createClient();

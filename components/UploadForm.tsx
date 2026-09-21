@@ -9,6 +9,11 @@ import { createVideoRecord } from "@/lib/admin-actions";
 const MAX_VIDEO_BYTES = 500 * 1024 * 1024; // ~500 MB
 const MAX_THUMB_BYTES = 5 * 1024 * 1024; // ~5 MB
 
+/** Extension allowlists mirror the storage RLS policies in supabase/schema.sql. */
+const VIDEO_EXTS = ["mp4", "webm", "mov", "m4v", "ogv", "avi", "mkv"];
+const THUMB_EXTS = ["jpg", "jpeg", "png", "gif", "webp", "avif"];
+const extOf = (name: string) => name.split(".").pop()?.toLowerCase() ?? "";
+
 /** Direct XHR upload to Supabase Storage so we get a real progress bar. */
 function uploadToStorage(args: {
   bucket: string;
@@ -67,9 +72,13 @@ export default function UploadForm({ userId, categories }: { userId: string; cat
   function validateFiles(): string | null {
     if (!videoFile) return "Please choose a video file.";
     if (!videoFile.type.startsWith("video/")) return "Only video files are allowed.";
+    if (!VIDEO_EXTS.includes(extOf(videoFile.name)))
+      return `Unsupported video format — use one of: ${VIDEO_EXTS.join(", ")}.`;
     if (videoFile.size > MAX_VIDEO_BYTES) return "Video is too large — max 500 MB.";
     if (thumbFile) {
       if (!thumbFile.type.startsWith("image/")) return "Thumbnail must be an image file.";
+      if (!THUMB_EXTS.includes(extOf(thumbFile.name)))
+        return `Unsupported image format — use one of: ${THUMB_EXTS.join(", ")}.`;
       if (thumbFile.size > MAX_THUMB_BYTES) return "Thumbnail is too large — max 5 MB.";
     }
     if (!category) return "Please choose a category.";
@@ -171,7 +180,7 @@ export default function UploadForm({ userId, categories }: { userId: string; cat
           <label className="mb-1 block text-sm font-medium">Video file * (max 500 MB)</label>
           <input
             type="file"
-            accept="video/*"
+            accept=".mp4,.webm,.mov,.m4v,.ogv,.avi,.mkv"
             onChange={(e) => setVideoFile(e.target.files?.[0] ?? null)}
             className="w-full text-sm text-yt-muted file:mr-3 file:rounded-full file:border-0 file:bg-yt-surface file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-yt-hover"
           />
@@ -181,7 +190,7 @@ export default function UploadForm({ userId, categories }: { userId: string; cat
           <label className="mb-1 block text-sm font-medium">Thumbnail (optional, max 5 MB)</label>
           <input
             type="file"
-            accept="image/*"
+            accept=".jpg,.jpeg,.png,.gif,.webp,.avif"
             onChange={(e) => setThumbFile(e.target.files?.[0] ?? null)}
             className="w-full text-sm text-yt-muted file:mr-3 file:rounded-full file:border-0 file:bg-yt-surface file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-yt-hover"
           />

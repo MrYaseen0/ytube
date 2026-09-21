@@ -53,7 +53,7 @@ export default function SubscribeButton({
       onClick={toggle}
       disabled={!enabled || busy}
       title={enabled ? undefined : "Connect Supabase to subscribe"}
-      className={`rounded-full px-4 py-2 text-sm font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-60 ${
+      className={`flex min-h-[44px] items-center rounded-full px-4 py-2 text-sm font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-60 ${
         isSubbed
           ? "bg-yt-surface text-yt-text hover:bg-yt-hover"
           : "bg-gradient-to-r from-yt-red to-yt-pink text-white shadow-neon hover:shadow-neon-lg"

@@ -56,6 +56,16 @@ export default function Navbar({
     };
   }, [configured]);
 
+  // Escape closes the account menu.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
+
   async function signOut() {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -75,7 +85,7 @@ export default function Navbar({
     <header className="fixed inset-x-0 top-0 z-40 flex h-14 items-center gap-2 bg-yt-bg px-3 md:gap-4 md:px-4">
       <button
         onClick={onMenuClick}
-        className="rounded-full p-2 hover:bg-yt-hover"
+        className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full hover:bg-yt-hover"
         aria-label="Toggle sidebar"
       >
         <MenuIcon />
@@ -117,7 +127,11 @@ export default function Navbar({
 
       <div className="ml-auto flex shrink-0 items-center gap-1 sm:ml-0 md:gap-2">
         {/* Mobile search icon -> results page */}
-        <Link href="/results" className="rounded-full p-2 hover:bg-yt-hover sm:hidden" aria-label="Search">
+        <Link
+          href="/results"
+          className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full hover:bg-yt-hover sm:hidden"
+          aria-label="Search"
+        >
           <SearchIcon className="h-6 w-6" />
         </Link>
 
@@ -134,7 +148,13 @@ export default function Navbar({
             )}
             {user ? (
               <div className="relative">
-                <button onClick={() => setMenuOpen((o) => !o)} aria-label="Account menu">
+                <button
+                  onClick={() => setMenuOpen((o) => !o)}
+                  aria-label="Account menu"
+                  aria-haspopup="menu"
+                  aria-expanded={menuOpen}
+                  className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full"
+                >
                   <Avatar name={username || user.email || "?"} size={32} />
                 </button>
                 {menuOpen && (

@@ -88,20 +88,21 @@ export default function Comments({
               value={body}
               onChange={(e) => setBody(e.target.value)}
               placeholder="Add a comment..."
+              maxLength={1000}
               className="w-full border-b border-yt-border bg-transparent pb-1 text-sm outline-none transition-colors placeholder:text-yt-muted focus:border-yt-pink"
             />
             <div className="mt-2 flex justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setBody("")}
-                className="rounded-full px-4 py-1.5 text-sm font-medium hover:bg-yt-hover"
+                className="flex min-h-[44px] items-center rounded-full px-4 py-1.5 text-sm font-medium hover:bg-yt-hover"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={!body.trim() || busy}
-                className="rounded-full bg-gradient-to-r from-yt-red to-yt-pink px-4 py-1.5 text-sm font-semibold text-white shadow-neon-sm disabled:opacity-40 disabled:shadow-none"
+                className="flex min-h-[44px] items-center rounded-full bg-gradient-to-r from-yt-red to-yt-pink px-4 py-1.5 text-sm font-semibold text-white shadow-neon-sm disabled:opacity-40 disabled:shadow-none"
               >
                 Comment
               </button>

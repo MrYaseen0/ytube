@@ -338,7 +338,7 @@ CREATE POLICY "Admins upload thumbnails" ON storage.objects FOR INSERT
   WITH CHECK (
     bucket_id = 'thumbnails'
     AND public.is_admin()
-    AND lower(storage.extension(name)) = ANY (ARRAY['jpg','jpeg','png','gif','webp','avif','svg'])
+    AND lower(storage.extension(name)) = ANY (ARRAY['jpg','jpeg','png','gif','webp','avif'])
   );
 
 DROP POLICY IF EXISTS "Owners manage own video files" ON storage.objects;
@@ -358,3 +358,18 @@ DROP POLICY IF EXISTS "Owners delete own thumbnail files" ON storage.objects;
 DROP POLICY IF EXISTS "Admins delete thumbnail files" ON storage.objects;
 CREATE POLICY "Admins delete thumbnail files" ON storage.objects FOR DELETE
   USING (bucket_id = 'thumbnails' AND public.is_admin());
+
+-- ------------------------------------------------------------
+-- Input length caps (anti-spam hardening)
+-- ------------------------------------------------------------
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'comments_body_length') THEN
+    ALTER TABLE public.comments
+      ADD CONSTRAINT comments_body_length CHECK (char_length(body) <= 1000);
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'reports_reason_length') THEN
+    ALTER TABLE public.reports
+      ADD CONSTRAINT reports_reason_length CHECK (char_length(reason) <= 500);
+  END IF;
+END $$;

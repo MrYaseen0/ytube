@@ -51,7 +51,7 @@ export default function LikeButtons({
     }
   }
 
-  const base = "flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors";
+  const base = "flex min-h-[44px] items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors";
   return (
     <div
       className="flex items-center overflow-hidden rounded-full bg-yt-surface"
